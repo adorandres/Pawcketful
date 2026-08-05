@@ -71,59 +71,50 @@ if (isset($_POST['book'])) {
 
         <div class="container">
 
-        <!--aside--->
-        <aside>
-
-            <div class="top">
-
-                <div class="logo">
-                    <h2><span class="danger">Pawcketful</span></h2>
+            <!--aside--->
+            <aside class="navigation">
+                <div class="top">
+                    <div class="logo">
+                        <h2><span class="danger">Pawcketful</span></h2>
+                    </div>
+                    <span class="material-symbols-outlined">pets</span>
                 </div>
-                <div class="close" id="close_btn">
-                    <span class="material-symbols-outlined"> close </span>
+
+                <div class="sidebar">
+                    <a href="index.php">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <h3>Dashboard</h3>
+                    </a>
+                    <a href="appointments.php">
+                        <span class="material-symbols-outlined">calendar_add_on</span>
+                        <h3>Appointments</h3>
+                    </a>
+                    <a href="customer.php" class="active">
+                        <span class="material-symbols-outlined">pets</span>
+                        <h3>Customers</h3>
+                    </a>
+                    <a href="analytics.php">
+                        <span class="material-symbols-outlined">analytics</span>
+                        <h3>Analytics</h3>
+                    </a>
+                    <a href="message.php">
+                        <span class="material-symbols-outlined">inbox</span>
+                        <h3>Messages</h3>
+                    </a>
+                    <a href="report.php">
+                        <span class="material-symbols-outlined">medical_information</span>
+                        <h3>Reports</h3>
+                    </a>
+                    <a href="setting.php">
+                        <span class="material-symbols-outlined">settings</span>
+                        <h3>Settings</h3>
+                    </a>
+                    <a href="logout.php">
+                        <span class="material-symbols-outlined">logout</span>
+                        <h3>Logout</h3>
+                    </a>
                 </div>
-            </div>
-
-
-
-            <!--sidebar--->
-
-            <div class="sidebar">
-                <a href="index.php">
-                    <span class="material-symbols-outlined">dashboard </span>
-                    <h3>Dashboard</h3>
-                </a>
-                <a href="appointments.php">
-                    <span class="material-symbols-outlined">calendar_add_on </span>
-                    <h3>Appointments</h3>
-                </a>
-                <a href="customer.php">
-                    <span class="material-symbols-outlined">pets </span>
-                    <h3>Customers</h3>
-                </a>
-                <a href="analytics.php">
-                    <span class="material-symbols-outlined">analytics </span>
-                    <h3>Analytics</h3>
-                </a>
-                <a href="message.php">
-                    <span class="material-symbols-outlined">inbox </span>
-                    <h3>Messages</h3>
-                </a>
-                <a href="report.php">
-                    <span class="material-symbols-outlined">medical_information </span>
-                    <h3>Reports</h3>
-                </a>
-                <a href="setting.php">
-                    <span class="material-symbols-outlined">settings </span>
-                    <h3>Settings</h3>
-                </a>
-                <a href="logout.php">
-                    <span class="material-symbols-outlined">logout </span>
-                    <h3>Logout</h3>
-                </a>
-            </div>
-
-        </aside>
+            </aside>
 
 
         
@@ -151,10 +142,21 @@ if (isset($_POST['book'])) {
                             <input type="text" name="breed" required>
 
                             <label>Service</label>
-                            <input type="text" name="service" required>
+                            <select id="service" name="service" required>
+                                <option value="" disabled selected>Select Service</option>
+                                <option value="grooming">Cesarean Section Delivery</option>
+                                <option value="vaccination">spay</option>
+                                <option value="checkup">Neutering</option>
+                                <option value="training">Vaccination</option>
+                                <option value="boarding">Treatment & Confinement</option>
+                            </select>
 
                             <label>Payment</label>
-                            <input type="text" name="payment_status" required>
+                            <select id="payment" name="payment_status" required>
+                                <option value="" disabled selected>Select Payment Method</option>
+                                <option value="cash">Cash</option>
+                                <option value="gcash">GCash</option>
+                            </select>
 
                             <label>Date</label>
                             <input type="date" name="appointment_date" required>
