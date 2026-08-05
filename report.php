@@ -31,52 +31,50 @@ $query = mysqli_query($conn, "SELECT * FROM medical_records ORDER BY appointment
 <body>
 <div class="container">
 
-    <!-- Sidebar -->
-    <aside>
-        <div class="top">
-            <div class="logo">
-                <h2><span class="danger">Pawcketful</span></h2>
+    <!--aside--->
+        <aside class="navigation">
+            <div class="top">
+                <div class="logo">
+                    <h2><span class="danger">Pawcketful</span></h2>
+                </div>
+                <span class="material-symbols-outlined">pets</span>
             </div>
-            <div class="close" id="close_btn">
-                <span class="material-symbols-outlined">close</span>
-            </div>
-        </div>
 
-        <div class="sidebar">  
+            <div class="sidebar">
                 <a href="index.php">
-                    <span class="material-symbols-outlined">dashboard </span>
+                    <span class="material-symbols-outlined">dashboard</span>
                     <h3>Dashboard</h3>
                 </a>
                 <a href="appointments.php">
-                    <span class="material-symbols-outlined">calendar_add_on </span>
+                    <span class="material-symbols-outlined">calendar_add_on</span>
                     <h3>Appointments</h3>
                 </a>
                 <a href="customer.php">
-                    <span class="material-symbols-outlined">pets </span>
+                    <span class="material-symbols-outlined">pets</span>
                     <h3>Customers</h3>
                 </a>
                 <a href="analytics.php">
-                    <span class="material-symbols-outlined">analytics </span>
+                    <span class="material-symbols-outlined">analytics</span>
                     <h3>Analytics</h3>
                 </a>
                 <a href="message.php">
-                    <span class="material-symbols-outlined">inbox </span>
+                    <span class="material-symbols-outlined">inbox</span>
                     <h3>Messages</h3>
                 </a>
-                <a href="report.php">
-                    <span class="material-symbols-outlined">medical_information </span>
+                <a href="report.php" class="active">
+                    <span class="material-symbols-outlined">medical_information</span>
                     <h3>Reports</h3>
                 </a>
                 <a href="setting.php">
-                    <span class="material-symbols-outlined">settings </span>
+                    <span class="material-symbols-outlined">settings</span>
                     <h3>Settings</h3>
                 </a>
                 <a href="logout.php">
-                    <span class="material-symbols-outlined">logout </span>
+                    <span class="material-symbols-outlined">logout</span>
                     <h3>Logout</h3>
                 </a>
             </div>
-    </aside>
+        </aside>
 
     <!-- Main Content -->
     <main>
