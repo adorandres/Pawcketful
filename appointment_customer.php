@@ -179,6 +179,11 @@ if (isset($_POST['book'])) {
                 <label>Service</label>
                 <select id="service" name="service" required>
                     <option value="" disabled selected>Select Service</option>
+                    <option value="checkup">Check Ups</option>
+                    <option value="grooming">Grooming</option>
+                    <option value="consultation">Consultations</option>
+                    <option value="boarding">Pet Boarding</option>
+                    <option value="minor_surgery">Minor Surgeries</option>
                     <option value="cesarean">Cesarean Section Delivery</option>
                     <option value="spay">Spay</option>
                     <option value="neutering">Neutering</option>
@@ -186,12 +191,8 @@ if (isset($_POST['book'])) {
                     <option value="treatment">Treatment & Confinement</option>
                 </select>
 
-                <label>Payment</label>
-                <select id="payment" name="payment_status" required>
-                    <option value="" disabled selected>Select Payment Method</option>
-                    <option value="cash">Cash</option>
-                    <option value="gcash">GCash</option>
-                </select>
+                <label>Payment GCash (Reference No.)</label>
+                <input id="payment" name="payment_status" placeholder="Enter Reference Number">
 
                 <label>Date</label>
                 <input type="date" name="appointment_date" required>
