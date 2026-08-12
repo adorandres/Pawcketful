@@ -92,6 +92,7 @@ $query = mysqli_query($conn, "SELECT * FROM medical_records ORDER BY appointment
                         <th>Payment</th>
                         <th>Date</th>
                         <th>Time</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,6 +106,7 @@ $query = mysqli_query($conn, "SELECT * FROM medical_records ORDER BY appointment
                             <td><?php echo $row['payment_status']; ?></td>
                             <td><?php echo $row['appointment_date']; ?></td>
                             <td><?php echo date('h:i A', strtotime($row['appointment_time'])); ?></td>
+                            <td><?php echo $row['status']; ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
