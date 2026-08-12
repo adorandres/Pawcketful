@@ -12,6 +12,11 @@ if (!isset($_SESSION['user_id'])) {
 
 
 
+$total_records = mysqli_query($conn, "SELECT COUNT(*) AS total FROM medical_records");
+$records = mysqli_fetch_assoc($total_records)['total'];
+
+
+
 $customers = mysqli_query($conn, "SELECT customer_id, ownername FROM customers ORDER BY ownername ASC");
 ?>
 
@@ -85,18 +90,22 @@ $customers = mysqli_query($conn, "SELECT customer_id, ownername FROM customers O
                     <span class="material-symbols-outlined">groups</span>
                     <div class="chart-section">
                         <h2>Client List</h2>
-                        <table class="customer-list">
-                            <thead>
+
+                        <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Owner Name</th>
+                                    <th><b>ID - </b></th>
+                                    <th><b>Owner - </b></th>
+                                    <th><b>Pets</b></th>
+                                    </th>
                                 </tr>
-                            </thead>
+                        </thead>
+                        <table class="customer-list">
+                            
                             <tbody>
                                 <?php
                                 $customers = mysqli_query($conn, "SELECT * FROM customers ORDER BY ownername ASC");
                                 while ($c = mysqli_fetch_assoc($customers)) {
-                                    echo "<p>{$c['customer_id']} - <b>{$c['ownername']}</b> - {$c['pets']} - {$c['contact']} - {$c['email']}</p>";
+                                    echo "<p><b>{$c['customer_id']}</b> - <b>{$c['ownername']}</b> - <b>{$c['pets']}</b> - {$c['contact']} - {$c['email']}</p>";
                                 }
                                 ?>
                             </tbody>
@@ -107,14 +116,14 @@ $customers = mysqli_query($conn, "SELECT customer_id, ownername FROM customers O
                 <div class="card">
                     <span class="material-symbols-outlined">calendar_month</span>
                     <h3>Appointments</h3>
-                    <h1>120</h1>
+                    <h1><?php echo $records; ?></h1>
                     <small>This Week</small>
                 </div>
 
                 <div class="card">
                     <span class="material-symbols-outlined">pets</span>
                     <h3>Registered Pets</h3>
-                    <h1>320</h1>
+                    <h1>17</h1>
                     <small>This Month</small>
                 </div>
             </div>
