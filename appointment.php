@@ -36,52 +36,65 @@ $query = "SELECT a.*, c.ownername FROM appointments a
           WHERE a.status = 'Pending'";
 $result = mysqli_query($conn, $query);
 
-//confirmed at cancel
-
+// CONFIRM BUTTON
 if (isset($_POST['confirm'])) {
+    $appointment_id = $_POST['appointment_id'];
 
-    $id = $_POST['appointment_id'];
+    // Kunin ang appointment data
+    $result = mysqli_query($conn, "SELECT * FROM appointments WHERE appointment_id='$appointment_id'");
+    $row = mysqli_fetch_assoc($result);
 
-    mysqli_query($conn, "UPDATE appointments
-                         SET status='Confirmed'
-                         WHERE appointment_id='$id'");
+    // Insert sa medical_records (Done)
+    $insert = mysqli_query($conn, "INSERT INTO medical_records 
+        (appointment_id, customer_id, pet_name, breed, service, appointment_date, appointment_time, payment_status, status)
+        VALUES (
+            '{$row['appointment_id']}',
+            '{$row['customer_id']}',
+            '{$row['pet_name']}',
+            '{$row['breed']}',
+            '{$row['service']}',
+            '{$row['appointment_date']}',
+            '{$row['appointment_time']}',
+            '{$row['payment_status']}',
+            'Done'
+        )");
 
-    $getData = mysqli_query($conn, "SELECT * FROM appointments WHERE appointment_id='$id'");
-    $row = mysqli_fetch_assoc($getData);
+    // Update appointment status
+    mysqli_query($conn, "UPDATE appointments SET status='Done' WHERE appointment_id='$appointment_id'");
 
-
-
-    // I‑insert sa medical_records table
-
-    mysqli_query($conn, "INSERT INTO medical_records (appointment_id, customer_id, pet_name, breed, service, appointment_date, appointment_time, payment_status)
-                         VALUES ('{$row['appointment_id']}', '{$row['customer_id']}', '{$row['pet_name']}', '{$row['breed']}', '{$row['service']}', '{$row['appointment_date']}', '{$row['appointment_time']}', '{$row['payment_status']}')");
-
-
-
-    // Redirect to reports page
-    header("Location: report.php");
+    // Redirect or refresh
+    header("Location: appointments.php?confirmed=1");
     exit();
 }
 
+// AUTO‑CANCEL kapag lumipas ang araw
+$today = date('Y-m-d');
 
+// Update lahat ng pending na lumipas na
+mysqli_query($conn, "UPDATE appointments
+                     SET status='Cancelled'
+                     WHERE status='Pending' AND appointment_date < '$today'");
 
-// CANCEL
-
-if (isset($_POST['cancel'])) {
-
-    $id = $_POST['appointment_id'];
-
-    mysqli_query($conn, "UPDATE appointments
-                         SET status='Cancelled'
-                         WHERE appointment_id='$id'");
+// I‑insert lahat ng na‑cancel sa medical_records kung wala pa
+$cancelled = mysqli_query($conn, "SELECT * FROM appointments WHERE status='Cancelled' AND appointment_date < '$today'");
+while ($row = mysqli_fetch_assoc($cancelled)) {
+    $check = mysqli_query($conn, "SELECT * FROM medical_records WHERE appointment_id='{$row['appointment_id']}'");
+    if (mysqli_num_rows($check) == 0) {
+        mysqli_query($conn, "INSERT INTO medical_records 
+            (appointment_id, customer_id, pet_name, breed, service, appointment_date, appointment_time, payment_status, status)
+            VALUES (
+                '{$row['appointment_id']}',
+                '{$row['customer_id']}',
+                '{$row['pet_name']}',
+                '{$row['breed']}',
+                '{$row['service']}',
+                '{$row['appointment_date']}',
+                '{$row['appointment_time']}',
+                '{$row['payment_status']}',
+                'Cancelled'
+            )");
+    }
 }
-
-
-$query = "SELECT a.*, c.ownername 
-          FROM appointments a
-          JOIN customers c ON a.customer_id = c.customer_id
-          WHERE a.status IN ('Pending','Confirmed')";
-
 
 
 //para sa notif
@@ -89,7 +102,7 @@ $query = "SELECT a.*, c.ownername
 $notif = "SELECT c.ownername, a.pet_name, a.appointment_date, TIMESTAMPDIFF(MINUTE, a.appointment_date, NOW()) AS mins
           FROM appointments a
           JOIN customers c ON a.customer_id = c.customer_id
-          ORDER BY a.appointment_id DESC LIMIT 5";
+          ORDER BY a.appointment_id DESC LIMIT 1";
 $notif_result = mysqli_query($conn, $notif);
 
 
@@ -191,33 +204,34 @@ $notif_result = mysqli_query($conn, $notif);
                         </thead>
                         <tbody>
                             <?php
-                            mysqli_data_seek($result, 0); // reset pointer
+                            mysqli_data_seek($result, 0);
                             while ($row = mysqli_fetch_assoc($result)) {
-                                if ($row['appointment_date'] == $today) { ?>
+                                if (date('Y-m-d', strtotime($row['appointment_date'])) == $today) { ?>
                                     <tr>
                                         <td><?php echo $row['ownername']; ?></td>
                                         <td><?php echo $row['pet_name']; ?></td>
                                         <td><?php echo $row['breed']; ?></td>
                                         <td><?php echo $row['service']; ?></td>
                                         <td><?php echo $row['payment_status']; ?></td>
+                                        
                                         <td><?php echo date('h:i A', strtotime($row['appointment_time'])); ?></td>
-                                        <td style="color: magenta;"><?php echo $row['status']; ?></td>
+                                        <td style="color:magenta;"><?php echo $row['status']; ?></td>
                                         <td>
                                             <form method="POST" style="display:inline;">
-                                                <input type="hidden" name="appointment_id"
-                                                    value="<?php echo $row['appointment_id']; ?>">
-
+                                                <input type="hidden" name="appointment_id" value="<?php echo $row['appointment_id']; ?>">
                                                 <?php if ($row['status'] == 'Pending') { ?>
-                                                    <button type="submit" name="confirm" class="btn blue">Confirm</button>
-                                                    <button type="submit" name="cancel" class="btn red">Cancel</button>
+                                                    <button type="submit" name="confirm" class="btn red">Confirm</button>
                                                 <?php } elseif ($row['status'] == 'Cancelled') { ?>
                                                     <span style="color:red;font-weight:bold;">Cancelled</span>
+                                                <?php } elseif ($row['status'] == 'Done') { ?>
+                                                    <span style="color:green;font-weight:bold;">Done</span>
                                                 <?php } ?>
                                             </form>
+
                                         </td>
                                     </tr>
                             <?php }
-                            } ?>
+                            }  ?>
                                 </table>
                             </div>
 
@@ -294,19 +308,29 @@ $notif_result = mysqli_query($conn, $notif);
         <!-- notification -->
 
         <div class="calendar_add_on">
-                <h2>Notifications</h2>
-                <?php while ($n = mysqli_fetch_assoc($notif_result)) { ?>
-                    <div class="updates">
-                        <div class="update">
-                            <div class="profile-photo">
-                                <img src="images/dog3.jpg" alt="">
-                            </div>
-                            <div class="message">
-                                <p><b><?php echo $n['ownername']; ?></b> booked an appointment for <b><?php echo $n['pet_name']; ?></b></p>
-                                <small><?php echo $n['mins']; ?> Minutes Ago</small>
-                            </div>
-                <?php } ?>
+            <h2>Client Notifications</h2>
+            <div class="updates">
+                <?php if (!empty($_SESSION['notif_customer'])): ?>
+                <div class="update" style="border:1px solid #ccc; padding:1rem; margin-bottom:1rem; border-radius:10px;">
+                    <p><strong>Customer:</strong> <?php echo htmlspecialchars($_SESSION['notif_customer']); ?></p>
+                    <p><strong>Payment Status:</strong> <?php echo htmlspecialchars($_SESSION['notif_payment']); ?></p>
+
+                    <form method="POST" style="margin-top:0.5rem;">
+                        <input type="hidden" name="customer" value="<?php echo htmlspecialchars($_SESSION['notif_customer']); ?>">
+                        <button type="submit" name="confirm" class="btn blue">Confirm</button>
+                        <button type="submit" name="cancel" class="btn red">Cancel</button>
+                    </form>
+                </div>
+                <?php unset($_SESSION['notif_customer'], $_SESSION['notif_payment']); ?>
+            <?php endif; ?>
+
+
             </div>
+        </div>
+
+
+
+
         
 
 
