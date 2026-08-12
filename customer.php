@@ -15,14 +15,17 @@ if (!isset($_SESSION['user_id'])) {
 // ADD CUSTOMER
 
 if (isset($_POST['add_customer'])) {
-    $ownername = $_POST['fullname']; 
+    $user_id = $_SESSION['user_id'];
+    $ownername = $_POST['fullname'];
     $contact = $_POST['contact'];
     $email = $_POST['email'];
     $address = $_POST['address'];
     $pets = $_POST['pets'];
 
-    $query = "INSERT INTO customers (ownername, contact, email, address, pets)
-              VALUES ('$ownername', '$contact', '$email', '$address', '$pets')";
+    $user_id = $_SESSION['user_id'];
+    $query = "INSERT INTO customers (user_id, ownername, contact, email, address, pets)
+          VALUES ('$user_id', '$ownername', '$contact', '$email', '$address', '$pets')";
+
 
     if (mysqli_query($conn, $query)) {
         echo "<script>alert('Customer added successfully!');</script>";
@@ -30,6 +33,8 @@ if (isset($_POST['add_customer'])) {
         echo "<script>alert('Error: " . mysqli_error($conn) . "');</script>";
     }
 }
+
+
 
 
 
@@ -144,6 +149,11 @@ if (isset($_POST['book'])) {
                             <label>Service</label>
                             <select id="service" name="service" required>
                                 <option value="" disabled selected>Select Service</option>
+                                <option value="vaccination">Check Ups</option>
+                                <option value="vaccination">Grooming</option>
+                                <option value="vaccination">Consultations</option>
+                                <option value="vaccination">Pet boarding</option>
+                                <option value="vaccination">Minor Surgeries</option>
                                 <option value="grooming">Cesarean Section Delivery</option>
                                 <option value="vaccination">spay</option>
                                 <option value="checkup">Neutering</option>
@@ -157,6 +167,12 @@ if (isset($_POST['book'])) {
                                 <option value="cash">Cash</option>
                                 <option value="gcash">GCash</option>
                             </select>
+
+                            <!-- Reference number only shows if GCash -->
+                            <div id="ref-section" style="display:none; margin-top:1rem;">
+                                <label>Reference No. (GCash)</label>
+                                <input type="text" name="reference_no" placeholder="Enter Reference Number">
+                            </div>
 
                             <label>Date</label>
                             <input type="date" name="appointment_date" required>
@@ -183,6 +199,10 @@ if (isset($_POST['book'])) {
 
                             <label>Email</label>
                             <input type="email" name="email">
+
+                            <label>Address</label>
+                            <input type="text" name="address" required>
+
 
                             <label>Pet Name</label>
                             <input type="text" name="pets">
@@ -236,6 +256,17 @@ if (isset($_POST['book'])) {
         ? 'block' 
         : 'none';
         }
+
+
+        document.getElementById('payment').addEventListener('change', function() {
+            const refSection = document.getElementById('ref-section');
+            if (this.value === 'gcash') {
+                refSection.style.display = 'block';
+            } else {
+                refSection.style.display = 'none';
+            }
+        });
+
     </script>
 
 
